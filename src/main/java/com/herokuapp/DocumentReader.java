@@ -18,7 +18,7 @@ public class DocumentReader {
         this.excludedPages = excludedPages;
         try {
             stripper = new PDFTextStripperByArea();
-            stripper.setSortByPosition(true);
+            stripper.setSortByPosition(false);
             stripper.addRegion("limit", limit);
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,7 +39,7 @@ public class DocumentReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        return stripper.getTextForRegion("limit");
+        return stripper.getTextForRegion("limit").concat("\r\n");
     }
 
 }

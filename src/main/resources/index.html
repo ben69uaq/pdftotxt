@@ -1,0 +1,102 @@
+<html>
+	<head>
+		<title>PDF to TXT</title>
+		<style>
+			body {
+				padding: 0;
+				margin: 0;
+				font-family: Calibri;
+			}
+			#drop {
+				float: left;
+				width: 20%;
+				height: 100%;
+				text-align: center;
+				background-color: lightgray;
+			}
+			#list {
+				float: left;
+				width: 80%;
+				height: 100%;
+			}
+			.item {
+				cursor: pointer;
+				margin: 5px;
+				padding: 10px;
+				background-color: lightgray;
+				border-radius: 5px;
+			}
+			#download {
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				margin: 20px;
+				padding: 10px 20px;
+				cursor: pointer;
+				background-color: lightgray;
+				border-radius: 20px;
+			}
+		</style>
+	</head>
+<body>
+	<div id="drop" ondrop="dropFile(event);" ondragover="event.preventDefault()">
+		<div style="margin-top: 100px;">DROP HERE</div>
+	</div>
+	<div id="list"></div>
+	<div id="download" onclick="download()">DOWNLOAD</div>
+</body>
+<script>
+	function dropFile(e) {
+		e.preventDefault();
+		let files = e.dataTransfer.files;
+		([...files]).forEach(uploadFile);
+	}
+
+	function uploadFile(file) {
+		let url = '/upload'
+		let formData = new FormData()
+
+		formData.append('file', file)
+
+		fetch(url, {
+			method: 'POST',
+			body: formData
+		})
+		.then(() => {
+			console.log("file uploaded");
+			loadFileList();
+		})
+		.catch(() => {
+			console.error("error when uploading file");
+		})
+	}
+
+	function loadFileList() {
+		fetch('/list')
+		.then(response => response.json())
+		.then(displayList);
+	}
+
+	function displayList(data) {
+		var list = document.getElementById("list");
+		list.innerHTML = "";
+		data.forEach(fileName => {
+			let item = document.createElement('div');
+			item.className = "item";
+			item.textContent = decodeURI(fileName).replace(/\+/g, ' ');
+			item.onclick = () => openFile(fileName);
+			list.appendChild(item);
+		});
+	}
+
+	function openFile(fileName) {
+		window.open("/file/" + fileName, '_blank').focus();
+	}
+
+	function download() {
+		alert("bientot dispo");
+	}
+
+	loadFileList();
+</script>
+</html>
