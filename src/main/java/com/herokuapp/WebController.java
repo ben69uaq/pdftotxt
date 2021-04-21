@@ -56,9 +56,10 @@ public class WebController {
     @ResponseBody
     public ResponseEntity<String> file(@PathVariable String fileName) throws IOException {
         String decodedFileName = URLDecoder.decode(fileName, "UTF8");
-        String content = documentService.getFileContent(decodedFileName);
         log.info("reading file <" + decodedFileName + ">");
-        return ResponseEntity.ok().body(content.replaceAll("\r\n", "<br/>"));
+        String content = documentService.getFileContent(decodedFileName);
+        String separator = System.getProperty("line.separator");
+        return ResponseEntity.ok().body(content.replaceAll(separator, "<br/>"));
     }
 
     @RequestMapping("download")
