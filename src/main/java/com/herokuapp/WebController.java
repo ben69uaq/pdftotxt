@@ -28,7 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class WebController {
 
-    DocumentService documentService = new DocumentService();
+    DocumentService documentService;
+
+    WebController() {
+        FileService.initilize();
+        documentService = new DocumentService();
+    }
 
     @GetMapping("/")
     @ResponseBody
@@ -50,7 +55,7 @@ public class WebController {
     @RequestMapping("file/{fileName}")
     @ResponseBody
     public ResponseEntity<String> file(@PathVariable String fileName) throws IOException {
-        String decodedFileName = URLDecoder.decode(fileName, "UTF_8");
+        String decodedFileName = URLDecoder.decode(fileName, "UTF8");
         String content = documentService.getFileContent(decodedFileName);
         log.info("reading file <" + decodedFileName + ">");
         return ResponseEntity.ok().body(content.replaceAll("\r\n", "<br/>"));
@@ -74,7 +79,7 @@ public class WebController {
      */
     static private String encode(String input) {
         try {
-            return "\"" + URLEncoder.encode(input, "UTF_8") + "\"";
+            return "\"" + URLEncoder.encode(input, "UTF8") + "\"";
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

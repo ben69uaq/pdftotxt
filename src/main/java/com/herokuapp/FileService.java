@@ -16,7 +16,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileService {
 
+    //private final static String ROOT = "c:/data/";
     private final static String ROOT = "/data/";
+
+    static void initilize() {
+        Path input = Paths.get(ROOT + "input");
+        Path output = Paths.get(ROOT + "output");
+        try {
+            Files.createDirectories(input);
+            Files.createDirectories(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     static File getFile(String fileName) {
         return new File(ROOT + "input/" + fileName);
