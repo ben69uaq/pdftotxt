@@ -39,7 +39,7 @@ public class FileService {
     static void storeTxt(final String fileName, final String content) {
         final String outputPath = ROOT + "output/" + fileName;
         try {
-            Files.writeString(Paths.get(outputPath), content);
+            Files.write(Paths.get(outputPath), content.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

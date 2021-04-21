@@ -15,9 +15,7 @@ public class DocumentService {
     }
 
     void processAllFiles() {
-        System.out.println("process: begin");
         FileService.listFile().stream().forEach(this::processOneFile);
-        System.out.println("process: end process");
     }
 
     private void processOneFile(final String fileName) {

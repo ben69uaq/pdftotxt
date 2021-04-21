@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,14 +42,15 @@ public class WebController {
     @ResponseBody
     public ResponseEntity<String> list() throws IOException {
         List<String> fileList = FileService.listFile().stream()
-        .map(fileName -> "\"" + URLEncoder.encode(fileName, UTF_8) + "\"").collect(toList());
+        .map(WebController::encode)
+        .collect(toList());
         return ResponseEntity.ok().body(fileList.toString());
     }
 
     @RequestMapping("file/{fileName}")
     @ResponseBody
-    public ResponseEntity<String> file(@PathVariable String fileName) throws UnsupportedEncodingException {
-        String decodedFileName = URLDecoder.decode(fileName, UTF_8);
+    public ResponseEntity<String> file(@PathVariable String fileName) throws IOException {
+        String decodedFileName = URLDecoder.decode(fileName, "UTF_8");
         String content = documentService.getFileContent(decodedFileName);
         log.info("reading file <" + decodedFileName + ">");
         return ResponseEntity.ok().body(content.replaceAll("\r\n", "<br/>"));
@@ -67,6 +67,18 @@ public class WebController {
     public void upload(@RequestParam("file") MultipartFile file) {
         log.info("uploading file <" + file.getOriginalFilename() + ">");
         FileService.storeFile(file);
+    }
+
+    /*
+     * Not needed with Java10+
+     */
+    static private String encode(String input) {
+        try {
+            return "\"" + URLEncoder.encode(input, "UTF_8") + "\"";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }
