@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FileService {
 
     //private final static String ROOT = "c:/data/";
-    private final static String ROOT = "/data/";
+    private final static String ROOT = "/app/data/";
 
     static void initilize() {
         Path input = Paths.get(ROOT + "input");
