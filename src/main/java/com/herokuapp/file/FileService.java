@@ -1,4 +1,6 @@
-package com.herokuapp;
+package com.herokuapp.file;
+
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import static java.util.stream.Collectors.toList;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,12 +17,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileService {
 
-    //private final static String ROOT = "c:/data/";
-    private final static String ROOT = "/app/data/";
+    private final String root;
+    //windows "c:/data/";
+    //linux "/app/data/";
 
-    static void initilize() {
-        Path input = Paths.get(ROOT + "input");
-        Path output = Paths.get(ROOT + "output");
+    public FileService(String rootPath) {
+        root = rootPath;
+        initilize();
+    }
+
+    public void initilize() {
+        Path input = Paths.get(root + "input");
+        Path output = Paths.get(root + "output");
         try {
             Files.createDirectories(input);
             Files.createDirectories(output);
@@ -30,12 +37,12 @@ public class FileService {
         }
     }
 
-    static File getFile(String fileName) {
-        return new File(ROOT + "input/" + fileName);
+    public File get(String fileName) {
+        return new File(root + "input/" + fileName);
     }
 
-    static List<String> listFile() {
-        final String inputPath = ROOT + "input/";
+    public List<String> list() {
+        final String inputPath = root + "input/";
         try {
             return Files.list(Paths.get(inputPath))
             .filter(file -> !Files.isDirectory(file))
@@ -48,8 +55,8 @@ public class FileService {
         return Collections.emptyList();
     }
 
-    static void storeTxt(final String fileName, final String content) {
-        final String outputPath = ROOT + "output/" + fileName;
+    public void storeTxt(final String fileName, final String content) {
+        final String outputPath = root + "output/" + fileName;
         try {
             Files.write(Paths.get(outputPath), content.getBytes());
         } catch (IOException e) {
@@ -57,8 +64,8 @@ public class FileService {
         }
     }
 
-    static void storeFile(final MultipartFile file) {
-        final String inputPath = ROOT + "input/";
+    public void storeFile(final MultipartFile file) {
+        final String inputPath = root + "input/";
         try {
             file.transferTo(new File(inputPath + file.getOriginalFilename()));
             log.info("File stored: <" + file.getOriginalFilename() +">");

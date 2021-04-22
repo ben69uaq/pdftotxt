@@ -1,4 +1,4 @@
-package com.herokuapp;
+package com.herokuapp.pdfbox;
 
 import java.awt.Rectangle;
 import java.io.IOException;

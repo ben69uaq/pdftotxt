@@ -1,5 +1,7 @@
 package com.herokuapp;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -8,7 +10,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import static java.util.stream.Collectors.toList;
+import java.util.Optional;
+
+import com.herokuapp.file.FileService;
+import com.herokuapp.pdfbox.DocumentService;
+import com.herokuapp.sanitize.SanitizerService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +34,17 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class WebController {
 
-    DocumentService documentService;
+    private final String separator = System.getProperty("line.separator");
+
+    private final FileService fileService;
+    private final DocumentService documentService;
+    private final SanitizerService sanitizerService;
 
     WebController() {
-        FileService.initilize();
+        fileService = new FileService("c:/data/");
         documentService = new DocumentService();
+        sanitizerService = new SanitizerService();
+        fileService.initilize();
     }
 
     @GetMapping("/")
@@ -45,21 +57,36 @@ public class WebController {
 
     @GetMapping("list")
     @ResponseBody
-    public ResponseEntity<String> list() throws IOException {
-        List<String> fileList = FileService.listFile().stream()
-        .map(WebController::encode)
-        .collect(toList());
+    public ResponseEntity<String> list() {
+        List<String> fileList = fileService.list().stream().map(WebController::encode).collect(toList());
         return ResponseEntity.ok().body(fileList.toString());
     }
 
-    @RequestMapping("file/{fileName}")
+    @RequestMapping("originalfile/{fileName}")
     @ResponseBody
-    public ResponseEntity<String> file(@PathVariable String fileName) throws IOException {
-        String decodedFileName = URLDecoder.decode(fileName, "UTF8");
-        log.info("reading file <" + decodedFileName + ">");
-        String content = documentService.getFileContent(decodedFileName);
-        String separator = System.getProperty("line.separator");
-        return ResponseEntity.ok().body(content.replaceAll(separator, "<br/>"));
+    public ResponseEntity<String> originalFile(@PathVariable String fileName) {
+        log.info("reading file without sanitization <" + fileName + ">");
+        return Optional.of(fileName)
+            .map(WebController::decode)
+            .map(fileService::get)
+            .map(documentService::read)
+            .map(content -> content.replaceAll(separator, "<br/>"))
+            .map(content -> ResponseEntity.ok().body(content))
+            .orElseThrow(() -> new RuntimeException("Not able to retrieve original content of file " + fileName));
+    }
+
+    @RequestMapping("sanitizedfile/{fileName}")
+    @ResponseBody
+    public ResponseEntity<String> sanitizedFile(@PathVariable String fileName) {
+        log.info("reading file with sanitization <" + fileName + ">");
+        return Optional.of(fileName)
+            .map(WebController::decode)
+            .map(fileService::get)
+            .map(documentService::read)
+            .map(sanitizerService::sanitize)
+            .map(content -> content.replaceAll(separator, "<br/>"))
+            .map(content -> ResponseEntity.ok().body(content))
+            .orElseThrow(() -> new RuntimeException("Not able to retrieve sanitized content of file " + fileName));
     }
 
     @RequestMapping("download")
@@ -72,7 +99,7 @@ public class WebController {
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void upload(@RequestParam("file") MultipartFile file) {
         log.info("uploading file <" + file.getOriginalFilename() + ">");
-        FileService.storeFile(file);
+        fileService.storeFile(file);
     }
 
     /*
@@ -81,6 +108,18 @@ public class WebController {
     static private String encode(String input) {
         try {
             return "\"" + URLEncoder.encode(input, "UTF8") + "\"";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /*
+     * Not needed with Java10+
+     */
+    static private String decode(String input) {
+        try {
+            return URLDecoder.decode(input, "UTF8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

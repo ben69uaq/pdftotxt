@@ -1,4 +1,4 @@
-package com.herokuapp;
+package com.herokuapp.pdfbox;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,11 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 public class DocumentLoader {
-    static PDDocument loadDocument(File file) {
+
+    DocumentLoader() {
+    }
+
+    PDDocument loadDocument(File file) {
         try {
             return Loader.loadPDF(file);
         } catch (IOException e) {
