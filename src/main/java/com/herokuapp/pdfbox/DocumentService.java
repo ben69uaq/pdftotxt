@@ -13,7 +13,8 @@ public class DocumentService {
 
     public DocumentService() {
         documentLoader = new DocumentLoader();
-        documentReader = new DocumentReader(new Rectangle(23, 55, 548, 660), Collections.emptyList());
+        documentReader = new DocumentReader(new Rectangle(23, 55, 600, 660), Collections.emptyList());
+        //documentReader = new DocumentReader(new Rectangle(23, 55, 548, 660), Collections.emptyList());
     }
 
     public String read(final File file) {

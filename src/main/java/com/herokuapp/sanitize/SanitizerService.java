@@ -10,12 +10,14 @@ public class SanitizerService {
     private final Sanitizer removePartAfterConclusion;
     private final Sanitizer removeTableOfContent;
     private final Sanitizer removeReferenceParagraphe;
+    private final Sanitizer removeLinesWithoutWord;
 
     public SanitizerService() {
         removePartBeforeIntroduction = new RemovePartBeforeIntroduction();
         removePartAfterConclusion = new RemovePartAfterConclusion();
         removeTableOfContent = new RemoveTableOfContent();
         removeReferenceParagraphe = new RemoveReferenceParagraphe();
+        removeLinesWithoutWord = new RemoveLinesWithoutWord();
     }
 
     public String sanitize(final String input) {
@@ -25,6 +27,7 @@ public class SanitizerService {
         .map(removePartBeforeIntroduction::sanitize)
         .map(removePartAfterConclusion::sanitize)
         .map(removeReferenceParagraphe::sanitize)
+        .map(removeLinesWithoutWord::sanitize)
         .map(this::joinLines)
         .orElseThrow(() -> new RuntimeException("Error while sanitizing document"));
     }
