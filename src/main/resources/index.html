@@ -39,15 +39,31 @@
 		</style>
 	</head>
 <body>
-	<div id="drop" ondrop="dropFile(event);" ondragover="event.preventDefault()">
-		<div style="margin-top: 100px;">DROP HERE</div>
+	<div id="drop" ondrop="drop(event);" ondragover="dragOver(event);" ondragenter="dragEnter(event);" ondragleave="dragLeave(event);">
+		<div id="dropMsg" style="margin-top: 100px;">DROP HERE</div>
 	</div>
 	<div id="list"></div>
 	<div id="download" onclick="download()">DOWNLOAD</div>
 </body>
 <script>
-	function dropFile(e) {
+	function dragOver(e) {
+		e.preventDefault();	
+	}
+	function dragEnter(e) {
 		e.preventDefault();
+		var msg = document.getElementById("dropMsg");
+		msg.innerHTML = "YES HERE";
+	}
+	function dragLeave(e) {
+		e.preventDefault();	
+		var msg = document.getElementById("dropMsg");
+		msg.innerHTML = "DROP HERE";
+	}
+
+	function drop(e) {
+		e.preventDefault();
+		var msg = document.getElementById("dropMsg");
+		msg.innerHTML = "WAIT ...";
 		let files = e.dataTransfer.files;
 		([...files]).forEach(uploadFile);
 	}
@@ -55,6 +71,7 @@
 	function uploadFile(file) {
 		let url = '/upload'
 		let formData = new FormData()
+		var msg = document.getElementById("dropMsg");
 
 		formData.append('file', file)
 
@@ -63,11 +80,12 @@
 			body: formData
 		})
 		.then(() => {
-			console.log("file uploaded");
+			msg.innerHTML = "SUCCESS";
 			loadFileList();
+			setTimeout(function(){ msg.innerHTML = "DROP HERE"; }, 2000);
 		})
 		.catch(() => {
-			console.error("error when uploading file");
+			msg.innerHTML = "ERROR";
 		})
 	}
 
