@@ -9,13 +9,7 @@
             "name": "Launch Application",
             "request": "launch",
             "mainClass": "com.herokuapp.Application",
-            "projectName": "transcashmastercard"
-        },
-        {
-            "type": "java",
-            "name": "Launch Current File",
-            "request": "launch",
-            "mainClass": "${file}"
+            "projectName": "pdftotxt"
         }
     ]
 }
