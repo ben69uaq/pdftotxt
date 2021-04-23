@@ -5,45 +5,82 @@
 			body {
 				padding: 0;
 				margin: 0;
-				font-family: Calibri;
+				font-size: 15px;
+				font-family: Helvetica;
+				background-color: #eee;
 			}
-			#drop {
+			#left {
 				float: left;
-				width: 20%;
+				width:20%;
+			}
+			#right {
+				float: right;
+				width:80%;
+			}
+			#logo, #topbar {
+				padding-top: 20px;
+				width: 100%;
+				height: 40px;
+			}
+			#drop, #list {
+				box-sizing: border-box;
 				height: 100%;
+				margin-top: -60px;
+				padding-top: 60px;
+			}
+			#logo {
+				padding: 10px;
+				font-size: 20px;
+				color: white;
+				font-size: 30px;
+				font-weight: 700;
+			}
+			#dropmsg {
+				margin-top: 150px;
 				text-align: center;
-				background-color: lightgray;
+			}
+			#topbar {
+				padding-right: 10px;
 			}
 			#list {
-				float: left;
-				width: 80%;
 				height: 100%;
 			}
-			.item {
-				cursor: pointer;
+			#list .item {
 				margin: 5px;
 				padding: 10px;
-				background-color: lightgray;
-				border-radius: 5px;
+				border-radius: 3px;
+				background-color: white;
 			}
-			#download {
-				position: absolute;
-				bottom: 0;
-				right: 0;
-				margin: 20px;
-				padding: 10px 20px;
+			.button {
+				float: right;
 				cursor: pointer;
-				background-color: lightgray;
+				height: 16px;
+				padding: 3px 6px 3px 6px;
+				margin-right: 3px;
 				border-radius: 20px;
+				background-color: white;
+				box-shadow: 0 0 5px rgba(0,0,0,0.6);
+			}
+			.button:hover, #drop:hover {
+				color: white;
+				background-color: lightslategray;
 			}
 		</style>
 	</head>
 <body>
-	<div id="drop" ondrop="drop(event);" ondragover="dragOver(event);" ondragenter="dragEnter(event);" ondragleave="dragLeave(event);">
-		<div id="dropMsg" style="margin-top: 100px;">DROP HERE</div>
+	<div id="left">
+		<div id="logo">PDF to TXT</div>
+		<div id="drop" ondrop="drop(event);" ondragover="dragOver(event);" ondragenter="dragEnter(event);" ondragleave="dragLeave(event);">
+			<div id="dropmsg">DROP FILE HERE</div>
+		</div>
+	</div><div id="right">
+		<div id="topbar">
+			<span class="button" onclick="deleteAll();" title="delete all files">DELETE ALL</span>
+			<span class="button" onclick="seeAll();" title="see all files sanitized and concatenated">SEE ALL</span>
+		</div>
+		<div id="list"></div>
+		
 	</div>
-	<div id="list"></div>
-	<div id="download" onclick="download()">DOWNLOAD</div>
 </body>
 <script>
 	function dragOver(e) {
@@ -51,18 +88,17 @@
 	}
 	function dragEnter(e) {
 		e.preventDefault();
-		var msg = document.getElementById("dropMsg");
+		var msg = document.getElementById("dropmsg");
 		msg.innerHTML = "YES HERE";
 	}
 	function dragLeave(e) {
 		e.preventDefault();	
-		var msg = document.getElementById("dropMsg");
-		msg.innerHTML = "DROP HERE";
+		var msg = document.getElementById("dropmsg");
+		msg.innerHTML = "DROP FILE HERE";
 	}
-
 	function drop(e) {
 		e.preventDefault();
-		var msg = document.getElementById("dropMsg");
+		var msg = document.getElementById("dropmsg");
 		msg.innerHTML = "WAIT ...";
 		let files = e.dataTransfer.files;
 		([...files]).forEach(uploadFile);
@@ -71,7 +107,7 @@
 	function uploadFile(file) {
 		let url = '/upload'
 		let formData = new FormData()
-		var msg = document.getElementById("dropMsg");
+		var msg = document.getElementById("dropmsg");
 
 		formData.append('file', file)
 
@@ -81,12 +117,30 @@
 		})
 		.then(() => {
 			msg.innerHTML = "SUCCESS";
-			loadFileList();
-			setTimeout(function(){ msg.innerHTML = "DROP HERE"; }, 2000);
+			setTimeout(function(){ msg.innerHTML = "DROP FILE HERE"; }, 2000);
 		})
+		.then(loadFileList)
 		.catch(() => {
 			msg.innerHTML = "ERROR";
 		})
+	}
+	function deleteFile(fileName) {
+		fetch('/delete/' + fileName)
+		.then(loadFileList);
+	}
+	function deleteAll() {
+		fetch('/delete/all')
+		.then(loadFileList);
+	}
+
+	function seeSanitized(fileName) {
+		window.open("/get/sanitized/" + fileName, '_blank').focus();
+	}
+	function seeOriginal(fileName) {
+		window.open("/get/original/" + fileName, '_blank').focus();
+	}
+	function seeAll() {
+		window.open("/get/all", '_blank').focus();
 	}
 
 	function loadFileList() {
@@ -94,25 +148,16 @@
 		.then(response => response.json())
 		.then(displayList);
 	}
-
 	function displayList(data) {
 		var list = document.getElementById("list");
 		list.innerHTML = "";
 		data.forEach(fileName => {
-			let item = document.createElement('div');
-			item.className = "item";
-			item.textContent = decodeURI(fileName).replace(/\+/g, ' ');
-			item.onclick = () => openFile(fileName);
-			list.appendChild(item);
+			list.innerHTML += "<div class='item'>" + decodeURI(fileName).replace(/\+/g, ' ')
+							+ "<span class='button' onclick='deleteFile(\"" + fileName + "\")' title='delete file'>X</span>"
+							+ "<span class='button' onclick='seeOriginal(\"" + fileName + "\")' title='see original file'>O</span>"
+							+ "<span class='button' onclick='seeSanitized(\"" + fileName + "\")' title='see sanitized file'>S</span>"
+							+ "</div>";
 		});
-	}
-
-	function openFile(fileName) {
-		window.open("/sanitizedfile/" + fileName, '_blank').focus();
-	}
-
-	function download() {
-		alert("bientot dispo");
 	}
 
 	loadFileList();

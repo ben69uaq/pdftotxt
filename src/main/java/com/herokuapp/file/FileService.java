@@ -59,6 +59,7 @@ public class FileService {
         final String outputPath = root + "output/" + fileName;
         try {
             Files.write(Paths.get(outputPath), content.getBytes());
+            log.info("File stored: <" + fileName +">");
         } catch (IOException e) {
             e.printStackTrace();
         }
