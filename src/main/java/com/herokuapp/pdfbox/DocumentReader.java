@@ -11,6 +11,8 @@ import org.apache.pdfbox.text.PDFTextStripperByArea;
 
 public class DocumentReader {
 
+    private final String separator = System.getProperty("line.separator");
+
     PDFTextStripperByArea stripper;
     List<Integer> excludedPages;
 
@@ -39,7 +41,7 @@ public class DocumentReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        return stripper.getTextForRegion("limit").concat("\r\n");
+        return stripper.getTextForRegion("limit").concat(separator);
     }
 
 }

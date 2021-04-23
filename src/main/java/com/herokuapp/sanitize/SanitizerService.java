@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class SanitizerService {
 
-    private final static String LINE_SEPARATOR = "\r\n";
+    private final String separator = System.getProperty("line.separator");
 
     private final Sanitizer removePartBeforeIntroduction;
     private final Sanitizer removePartAfterConclusion;
@@ -30,11 +30,11 @@ public class SanitizerService {
     }
 
     private String[] splitLines(String input) {
-        return input.split(LINE_SEPARATOR);
+        return input.split(separator);
     }
 
     private String joinLines(String[] input) {
-        return String.join(LINE_SEPARATOR, input);
+        return String.join(separator, input);
     }
 
 
