@@ -3,6 +3,7 @@ package com.herokuapp;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -120,11 +121,21 @@ public class WebController {
     }
 
     static private String encode(String input) {
-        return "\"" + URLEncoder.encode(input, StandardCharsets.UTF_8) + "\"";
+        try {
+            return "\"" + URLEncoder.encode(input, StandardCharsets.UTF_8.toString()) + "\"";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     static private String decode(String input) {
-        return URLDecoder.decode(input,  StandardCharsets.UTF_8);
+        try {
+            return URLDecoder.decode(input,  StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }
