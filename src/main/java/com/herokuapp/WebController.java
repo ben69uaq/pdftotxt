@@ -3,9 +3,9 @@ package com.herokuapp;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,28 +119,12 @@ public class WebController {
         fileService.storeFile(file);
     }
 
-    /*
-     * Not needed with Java10+
-     */
     static private String encode(String input) {
-        try {
-            return "\"" + URLEncoder.encode(input, "UTF8") + "\"";
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return "\"" + URLEncoder.encode(input, StandardCharsets.UTF_8) + "\"";
     }
 
-    /*
-     * Not needed with Java10+
-     */
     static private String decode(String input) {
-        try {
-            return URLDecoder.decode(input, "UTF8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return URLDecoder.decode(input,  StandardCharsets.UTF_8);
     }
 
 }
