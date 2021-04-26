@@ -32,7 +32,7 @@
 				padding-top: 15px;
 				background-color: lightgray;
 			}
-			#drop {
+			#zone {
 				position: fixed;
 				top: 0;
 				left: 0;
@@ -68,7 +68,7 @@
 				background-color: white;
 				box-shadow: 0 0 5px lightslategray;
 			}
-			.button:hover, #drop:hover, #drop:focus {
+			.button:hover, #zone:hover, #zone.highlighted	 {
 				color: white;
 				background-color: lightslategray;
 			}
@@ -80,9 +80,7 @@
 		<span class="button" onclick="deleteAll();" title="delete all files">DELETE ALL</span>
 		<span class="button" onclick="seeAll();" title="see all files sanitized and concatenated">SEE ALL</span>
 	</div>
-	<div id="drop" ondrop="drop(event);" ondragover="dragOver(event);" ondragenter="dragEnter(event);" ondragleave="dragLeave(event);">
-		<div id="drop">DROP FILE HERE</div>
-	</div>
+	<div id="zone" ondrop="drop(event);" ondragover="dragOver(event);" ondragenter="dragEnter(event);" ondragleave="dragLeave(event);">DROP FILE HERE</div>
 	<div id="list"></div>
 </body>
 <script>
@@ -90,41 +88,33 @@
 		e.preventDefault();	
 	}
 	function dragEnter(e) {
-		e.preventDefault();
-		var msg = document.getElementById("drop");
-		msg.innerHTML = "YES HERE";
+		zone.className = "highlighted";
+		zone.innerHTML = "YES HERE";
 	}
 	function dragLeave(e) {
-		e.preventDefault();	
-		var msg = document.getElementById("drop");
-		msg.innerHTML = "DROP FILE HERE";
+		zone.className = "";
+		zone.innerHTML = "DROP FILE HERE";
 	}
 	function drop(e) {
 		e.preventDefault();
-		var msg = document.getElementById("drop");
-		msg.innerHTML = "WAIT ...";
+		zone.innerHTML = "WAIT ...";
 		let files = e.dataTransfer.files;
 		([...files]).forEach(uploadFile);
 	}
-
 	function uploadFile(file) {
-		let url = '/upload'
 		let formData = new FormData()
-		var msg = document.getElementById("drop");
-
 		formData.append('file', file)
-
-		fetch(url, {
+		fetch('/upload', {
 			method: 'POST',
 			body: formData
 		})
 		.then(() => {
-			msg.innerHTML = "SUCCESS";
-			setTimeout(function(){ msg.innerHTML = "DROP FILE HERE"; }, 2000);
+			zone.innerHTML = "SUCCESS";
+			setTimeout(function(){ zone.innerHTML = "DROP FILE HERE"; }, 2000);
 		})
 		.then(loadFileList)
 		.catch(() => {
-			msg.innerHTML = "ERROR";
+			zone.innerHTML = "ERROR";
 		})
 	}
 	function deleteFile(fileName) {
@@ -135,7 +125,6 @@
 		fetch('/delete/all')
 		.then(loadFileList);
 	}
-
 	function seeSanitized(fileName) {
 		window.open("/get/sanitized/" + fileName, '_blank').focus();
 	}
@@ -145,7 +134,6 @@
 	function seeAll() {
 		window.open("/get/all", '_blank').focus();
 	}
-
 	function loadFileList() {
 		fetch('/list')
 		.then(response => response.json())
@@ -162,7 +150,6 @@
 							+ "</div>";
 		});
 	}
-
 	loadFileList();
 </script>
 </html>
