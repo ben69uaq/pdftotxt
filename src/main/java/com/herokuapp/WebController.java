@@ -52,7 +52,13 @@ public class WebController {
     @GetMapping("/")
     @ResponseBody
     public ResponseEntity<String> index() throws IOException {
-        Path filePath = Paths.get("src/main/resources/index.html");
+        return serve("index.html");
+    }
+
+    @GetMapping("resources/{fileName}")
+    @ResponseBody
+    public ResponseEntity<String> serve(@PathVariable String fileName) throws IOException {
+        Path filePath = Paths.get("src/main/resources/" + fileName);
         String fileContent = new String(Files.readAllBytes(filePath));
         return ResponseEntity.ok().body(fileContent);
     }
