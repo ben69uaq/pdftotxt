@@ -109,14 +109,19 @@
 			body: formData
 		})
 		.then(() => {
-			zone.className = "";
 			zone.innerHTML = "SUCCESS";
-			setTimeout(function(){ zone.innerHTML = "DROP FILE HERE"; }, 2000);
+			setTimeout(function(){
+				zone.className = "";
+				zone.innerHTML = "DROP FILE HERE";
+			}, 2000);
 		})
 		.then(loadFileList)
 		.catch(() => {
-			zone.className = "";
 			zone.innerHTML = "ERROR";
+			setTimeout(function(){
+				zone.className = "";
+				zone.innerHTML = "DROP FILE HERE";
+			}, 2000);
 		})
 	}
 	function deleteFile(fileName) {
