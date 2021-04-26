@@ -1,81 +1,89 @@
 <html>
 	<head>
-		<title>PDF to TXT</title>
+		<title>PDFtoTXT</title>
 		<style>
 			body {
 				padding: 0;
 				margin: 0;
 				font-size: 15px;
 				font-family: Helvetica;
-				background-color: #eee;
-			}
-			#left {
-				float: left;
-				width: 200px;
-			}
-			#right {
-				padding-left: 200px;
-			}
-			#logo, #topbar {
-				padding-top: 20px;
-				width: 100%;
-				height: 40px;
-			}
-			#drop, #list {
-				box-sizing: border-box;
-				height: 100%;
-				margin-top: -60px;
-				padding-top: 60px;
+				background-color: lightgray;
 			}
 			#logo {
-				padding-left: 10px;
-				font-size: 20px;
-				color: white;
-				font-size: 30px;
+				position: fixed;
+				bottom: 0;
+				right: 0;
+				z-index: -1;
+				padding: 10px;
+				color: darkgray;
+				font-size: 100px;
 				font-weight: 700;
 			}
+			#logo span {
+				font-size: 80px;
+				font-weight: 300;
+			}
+			#bar {
+				position: fixed;
+				top: 0;
+				right: 25px;
+				width: 100%;
+				height: 35px;
+				padding-top: 15px;
+				background-color: lightgray;
+			}
 			#drop {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 240px;
+				height: 100%;
+				padding-top: 200px;
+				text-align: center;
+				font-size: 20px;
+				font-weight: bold;
 				background-color: darkgrey;
 			}
-			#dropmsg {
-				text-align: center;
-				margin-top: 150px;
+			#list {
+				box-sizing: border-box;
+				width: 100%;
+				height: 100%;
+				padding: 50px 10px 10px 250px;
+				overflow-y: auto;
 			}
 			#list .item {
-				margin: 5px;
 				padding: 10px;
-				border-radius: 3px;
+				margin-bottom: 5px;
+				border-radius: 5px;
 				background-color: white;
+				box-shadow: 0 0 5px darkgray;
 			}
 			.button {
-				float: right;
 				cursor: pointer;
+				float: right;
 				height: 16px;
-				padding: 3px 6px 3px 6px;
-				margin-right: 3px;
+				padding: 3px 6px ;
+				margin: -2px 4px 0 0;
 				border-radius: 20px;
 				background-color: white;
-				box-shadow: 0 0 5px rgba(0,0,0,0.6);
+				box-shadow: 0 0 5px lightslategray;
 			}
-			.button:hover, #drop {
+			.button:hover, #drop:hover, #drop:focus {
 				color: white;
 				background-color: lightslategray;
 			}
 		</style>
 	</head>
 <body>
-	<div id="left">
-		<div id="logo">PDF to TXT</div>
-		<div id="drop" ondrop="drop(event);" ondragover="dragOver(event);" ondragenter="dragEnter(event);" ondragleave="dragLeave(event);">
-			<div id="dropmsg">DROP FILE HERE</div>
-		</div>
-	</div><div id="right">
-		<div id="topbar">
-			<span class="button" onclick="deleteAll();" title="delete all files">DELETE ALL</span>
-			<span class="button" onclick="seeAll();" title="see all files sanitized and concatenated">SEE ALL</span>
-		</div>
-		<div id="list"></div>
+	<div id="logo">PDF<span>to</span>TXT</div>
+	<div id="bar">
+		<span class="button" onclick="deleteAll();" title="delete all files">DELETE ALL</span>
+		<span class="button" onclick="seeAll();" title="see all files sanitized and concatenated">SEE ALL</span>
 	</div>
+	<div id="drop" ondrop="drop(event);" ondragover="dragOver(event);" ondragenter="dragEnter(event);" ondragleave="dragLeave(event);">
+		<div id="drop">DROP FILE HERE</div>
+	</div>
+	<div id="list"></div>
 </body>
 <script>
 	function dragOver(e) {
@@ -83,17 +91,17 @@
 	}
 	function dragEnter(e) {
 		e.preventDefault();
-		var msg = document.getElementById("dropmsg");
+		var msg = document.getElementById("drop");
 		msg.innerHTML = "YES HERE";
 	}
 	function dragLeave(e) {
 		e.preventDefault();	
-		var msg = document.getElementById("dropmsg");
+		var msg = document.getElementById("drop");
 		msg.innerHTML = "DROP FILE HERE";
 	}
 	function drop(e) {
 		e.preventDefault();
-		var msg = document.getElementById("dropmsg");
+		var msg = document.getElementById("drop");
 		msg.innerHTML = "WAIT ...";
 		let files = e.dataTransfer.files;
 		([...files]).forEach(uploadFile);
@@ -102,7 +110,7 @@
 	function uploadFile(file) {
 		let url = '/upload'
 		let formData = new FormData()
-		var msg = document.getElementById("dropmsg");
+		var msg = document.getElementById("drop");
 
 		formData.append('file', file)
 
