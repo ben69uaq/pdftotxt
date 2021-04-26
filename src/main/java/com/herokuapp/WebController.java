@@ -3,13 +3,9 @@ package com.herokuapp;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,20 +43,6 @@ public class WebController {
         documentService = new DocumentService();
         sanitizerService = new SanitizerService();
         fileService.initilize();
-    }
-
-    @GetMapping("/")
-    @ResponseBody
-    public ResponseEntity<String> index() throws IOException {
-        return serve("index.html");
-    }
-
-    @GetMapping("resources/{fileName}")
-    @ResponseBody
-    public ResponseEntity<String> serve(@PathVariable String fileName) throws IOException {
-        Path filePath = Paths.get("src/main/resources/" + fileName);
-        String fileContent = new String(Files.readAllBytes(filePath));
-        return ResponseEntity.ok().body(fileContent);
     }
 
     @GetMapping("list")
