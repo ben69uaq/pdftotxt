@@ -109,11 +109,13 @@
 			body: formData
 		})
 		.then(() => {
+			zone.className = "";
 			zone.innerHTML = "SUCCESS";
 			setTimeout(function(){ zone.innerHTML = "DROP FILE HERE"; }, 2000);
 		})
 		.then(loadFileList)
 		.catch(() => {
+			zone.className = "";
 			zone.innerHTML = "ERROR";
 		})
 	}
@@ -136,11 +138,10 @@
 	}
 	function loadFileList() {
 		fetch('/list')
-		.then(response => response.json())
+		.then(response => response.json())	
 		.then(displayList);
 	}
 	function displayList(data) {
-		var list = document.getElementById("list");
 		list.innerHTML = "";
 		data.forEach(fileName => {
 			list.innerHTML += "<div class='item'>" + decodeURI(fileName).replace(/\+/g, ' ')
