@@ -12,9 +12,11 @@ function dragLeave(e) {
 }
 function drop(e) {
     e.preventDefault();
-    zone.innerHTML = "WAIT ...";
     let files = e.dataTransfer.files;
+    window.total = files.length;
+    window.count = 0;
     ([...files]).forEach(uploadFile);
+    zone.innerHTML = "WAIT ...";
 }
 
 // file management functions
@@ -26,16 +28,19 @@ function uploadFile(file) {
         body: formData
     })
     .then(() => {
-        zone.innerHTML = "SUCCESS";
-        setTimeout(function(){
-            zone.className = "";
-            zone.innerHTML = "DROP FILE HERE";
-        }, 2000);
+        count++;
+        zone.innerHTML = count + " / " + total + " UPLOADED";
+        if(count == total) {
+            setTimeout(() => {
+                zone.className = "";
+                zone.innerHTML = "DROP FILE HERE";
+            }, 2000);
+        }
     })
     .then(loadFileList)
     .catch(() => {
         zone.innerHTML = "ERROR";
-        setTimeout(function(){
+        setTimeout(() => {
             zone.className = "";
             zone.innerHTML = "DROP FILE HERE";
         }, 2000);
