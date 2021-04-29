@@ -23,11 +23,11 @@ public class SanitizerService {
     public String sanitize(final String input) {
         return Optional.of(input)
         .map(this::splitLines)
+        .map(removeLinesWithoutWord::sanitize)
         .map(removeTableOfContent::sanitize)
         .map(removePartBeforeIntroduction::sanitize)
         .map(removePartAfterConclusion::sanitize)
         .map(removeReferenceParagraphe::sanitize)
-        .map(removeLinesWithoutWord::sanitize)
         .map(this::joinLines)
         .orElseThrow(() -> new RuntimeException("Error while sanitizing document"));
     }
