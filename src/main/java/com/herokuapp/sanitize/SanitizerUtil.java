@@ -1,5 +1,8 @@
 package com.herokuapp.sanitize;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +32,7 @@ public class SanitizerUtil {
 
     static boolean startsOrBeginWithOneOf(String line, String[] keywords) {
         for(String keyword:keywords) {
-            if(line.startsWith(keyword) || line.endsWith(keyword)) {
+            if(line == keyword || line.startsWith(keyword) || line.endsWith(keyword)) {
                 log.info("[startsOrBeginWithOneOf] <" + keyword + "> found in <" + line + ">");
                 return true;
             }
@@ -46,5 +49,16 @@ public class SanitizerUtil {
         }
         log.info("[indexOfNextTitle] no next title found, returning end index " + lines.length);
         return lines.length;
+    }
+
+    static String[] removeLinesInRange(String[] lines, int referenceIndex, int nextTitleIndex) {
+        List<String> output = new ArrayList<String>();
+        for(int i=0; i<lines.length; i++) {
+            if(!(i >= referenceIndex && i < nextTitleIndex)) {
+                output.add(lines[i]);
+            }
+        }
+        log.info("line from index " + referenceIndex + " to index " + nextTitleIndex + " removed");
+        return output.stream().toArray(String[]::new);
     }
 }
