@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RemovePartAfterConclusion implements Sanitizer {
 
+    private final static String[] KEYWORD_ZERO = {"conclusion générale"};
     private final static String[] KEYWORD_FIRST = {"conclusions et perspectives"};
     private final static String[] KEYWORD_SECOND = {"conclusion", "conclusions"};
 
@@ -22,9 +23,13 @@ public class RemovePartAfterConclusion implements Sanitizer {
     }
     
     private int indexOfEndOfConclusion(String[] lines) {
+        int indexZero = indexOfLastKeyword(lines, KEYWORD_ZERO);
+        if(indexZero != -1) {
+            return indexOfNextTitle(lines, indexZero + 3); // search title three line after conclusion keyword
+        }
         int indexFirst = indexOfLastKeyword(lines, KEYWORD_FIRST);
         if(indexFirst != -1) {
-            return indexOfNextTitle(lines, indexFirst + 3); // search title three line after conclusion keyword
+            return indexOfNextTitle(lines, indexFirst + 3);
         }
         int indexSecond = indexOfLastKeyword(lines, KEYWORD_SECOND);
         if(indexSecond != -1) {
