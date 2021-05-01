@@ -13,7 +13,7 @@ public class RemovePartBeforeIntroduction implements Sanitizer {
     private final static String[] RESUME = {"résumé", "resume"};
 
     @Override
-    public String[] sanitize(String[] lines) {
+    public String[] apply(String[] lines) {
         int from = indexOfBeginingOfIntroduction(lines);
         if(from == -1) {
             return lines;

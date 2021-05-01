@@ -68,3 +68,11 @@ body {
     color: white;
     background-color: lightslategray;
 }
+#rules {
+    position: fixed;
+    padding: 20px;
+    top: 40px;
+    right: 25px;
+    background-color: darkgrey;
+    box-shadow: 0 0 5px darkgrey;
+}

@@ -8,7 +8,7 @@ public class RemoveReferenceParagraphe implements Sanitizer {
     private final static String[] KEYWORD = { "références", "references","bibliographie", "bibliography", "références bibliographiques" };
 
     @Override
-    public String[] sanitize(String[] lines) {
+    public String[] apply(String[] lines) {
         return removeReferenceParagraphe(lines);
     }
 

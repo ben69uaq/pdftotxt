@@ -20,14 +20,14 @@ public class SanitizerService {
         removeLinesWithoutWord = new RemoveLinesWithoutWord();
     }
 
-    public String sanitize(final String input) {
+    public String sanitize(final String input, final String rules) {
         return Optional.of(input)
         .map(this::splitLines)
-        .map(removeLinesWithoutWord::sanitize)
-        .map(removeTableOfContent::sanitize)
-        .map(removePartBeforeIntroduction::sanitize)
-        .map(removePartAfterConclusion::sanitize)
-        .map(removeReferenceParagraphe::sanitize)
+        .map(lines -> removeLinesWithoutWord.sanitize(lines, rules))
+        .map(lines -> removeTableOfContent.sanitize(lines, rules))
+        .map(lines -> removePartBeforeIntroduction.sanitize(lines, rules))
+        .map(lines -> removePartAfterConclusion.sanitize(lines, rules))
+        .map(lines -> removeReferenceParagraphe.sanitize(lines, rules))
         .map(this::joinLines)
         .orElseThrow(() -> new RuntimeException("Error while sanitizing document"));
     }
@@ -39,6 +39,5 @@ public class SanitizerService {
     private String joinLines(String[] input) {
         return String.join(separator, input);
     }
-
 
 }

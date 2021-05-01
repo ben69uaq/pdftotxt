@@ -17,7 +17,7 @@ public class RemoveTableOfContent implements Sanitizer {
     private final static String[] TABLE_OF_CONTENT = {"table des matieres", "table des matières", "table des matières", "table of content", "sommaire"};
 
     @Override
-    public String[] sanitize(String[] lines) {
+    public String[] apply(String[] lines) {
         return Optional.of(lines)
             .map(this::removeBasedOnPageNumber)
             .map(this::removeBasedOnDots)

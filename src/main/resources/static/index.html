@@ -6,6 +6,7 @@
 <body>
 	<div id="logo">PDF<span>to</span>TXT</div>
 	<div id="bar">
+		<span class="button" onclick="toggleRules();" title="show rules applied or not during treatment">RULES</span>
 		<span class="button" onclick="deleteAll();" title="delete all files">DELETE ALL</span>
 		<span class="button" onclick="seeAll();" title="see all files sanitized and concatenated">SEE ALL</span>
 	</div>
@@ -13,6 +14,13 @@
 		DROP FILE HERE
 	</div>
 	<div id="list"></div>
+	<div id="rules" style="display:none;">
+		<input checked type="checkbox" name="RemoveLinesWithoutWord" id="rule1"><label for="rule1">Remove lines without word</label><br/>
+		<input checked type="checkbox" name="RemoveTableOfContent" id="rule2"><label for="rule2">Remove table of content</label><br/>
+		<input checked type="checkbox" name="RemovePartBeforeIntroduction" id="rule3"><label for="rule3">Remove part before introduction</label><br/>
+		<input checked type="checkbox" name="RemovePartAfterConclusion" id="rule4"><label for="rule4">Remove part after conclusion</label><br/>
+		<input checked type="checkbox" name="RemoveReferenceParagraphe" id="rule5"><label for="rule5">Remove reference paragraphe</label><br/>
+	</div>
 </body>
 <script src="script.js"></script>
 </html>
