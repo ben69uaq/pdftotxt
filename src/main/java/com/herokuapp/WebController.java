@@ -72,28 +72,15 @@ public class WebController {
             .forEach(File::delete);
     }
 
-    @RequestMapping("get/original/{fileName}")
+    @RequestMapping("get/{fileName}")
     @ResponseBody
-    public ResponseEntity<String> getOriginal(@PathVariable String fileName) {
-        log.info("reading file without sanitization <" + fileName + ">");
-        return Optional.of(fileName)
-            .map(WebController::decode)
-            .map(fileService::get)
-            .map(documentService::read)
-            .map(content -> content.replaceAll(separator, "<br/>"))
-            .map(content -> ResponseEntity.ok().body(content))
-            .orElseThrow(() -> new RuntimeException("Not able to retrieve original content of file " + fileName));
-    }
-
-    @RequestMapping("get/sanitized/{fileName}")
-    @ResponseBody
-    public ResponseEntity<String> getSanitized(@PathVariable String fileName) {
+    public ResponseEntity<String> get(@PathVariable String fileName, @RequestParam String rules) {
         log.info("reading file with sanitization <" + fileName + ">");
         return Optional.of(fileName)
             .map(WebController::decode)
             .map(fileService::get)
             .map(documentService::read)
-            .map(sanitizerService::sanitize)
+            .map(doc -> sanitizerService.sanitize(doc, rules))
             .map(content -> content.replaceAll(separator, "<br/>"))
             .map(content -> ResponseEntity.ok().body(content))
             .orElseThrow(() -> new RuntimeException("Not able to retrieve sanitized content of file " + fileName));
@@ -101,12 +88,12 @@ public class WebController {
 
     @RequestMapping("get/all")
     @ResponseBody
-    public ResponseEntity<String> getAll() {
+    public ResponseEntity<String> getAll(@RequestParam String rules) {
         log.info("reading all files with sanitization");
         return fileService.list().stream()
             .map(fileService::get)
             .map(documentService::read)
-            .map(sanitizerService::sanitize)
+            .map(doc -> sanitizerService.sanitize(doc, rules))
             .reduce((a,b) -> a.concat(separator).concat("-----").concat(separator).concat(b))
             .map(content -> content.replaceAll(separator, "<br/>"))
             .map(content -> ResponseEntity.ok().body(content))

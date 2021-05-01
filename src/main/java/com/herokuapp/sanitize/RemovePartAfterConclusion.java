@@ -13,7 +13,7 @@ public class RemovePartAfterConclusion implements Sanitizer {
     private final static String[] KEYWORD_SECOND = {"conclusion", "conclusions"};
 
     @Override
-    public String[] sanitize(String[] lines) {
+    public String[] apply(String[] lines) {
         int from = indexOfEndOfConclusion(lines);
         if(from == -1) {
             return lines;

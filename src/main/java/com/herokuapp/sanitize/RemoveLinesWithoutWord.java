@@ -7,7 +7,7 @@ public class RemoveLinesWithoutWord implements Sanitizer {
     private final String REGEX1 = ".*[A-zÀ-ú]{4}.*"; // at least 4 char
 
     @Override
-    public String[] sanitize(String[] lines) {
+    public String[] apply(String[] lines) {
         return Arrays.stream(lines)
         .filter(this::hasWord)
         .toArray(String[]::new);

@@ -54,14 +54,11 @@ function deleteAll() {
     fetch('/delete/all')
     .then(loadFileList);
 }
-function seeSanitized(fileName) {
-    window.open("/get/sanitized/" + fileName, '_blank').focus();
-}
-function seeOriginal(fileName) {
-    window.open("/get/original/" + fileName, '_blank').focus();
+function seeFile(fileName) {
+    window.open("/get/" + fileName + "?rules=" + getRules(), '_blank').focus();
 }
 function seeAll() {
-    window.open("/get/all", '_blank').focus();
+    window.open("/get/all" + "?rules=" + getRules(), '_blank').focus();
 }
 
 // list management functions
@@ -75,10 +72,17 @@ function displayList(data) {
     data.forEach(fileName => {
         list.innerHTML += "<div class='item'>" + decodeURI(fileName).replace(/\+/g, ' ')
                         + "<span class='button' onclick='deleteFile(\"" + fileName + "\")' title='delete file'>X</span>"
-                        + "<span class='button' onclick='seeOriginal(\"" + fileName + "\")' title='see original file'>O</span>"
-                        + "<span class='button' onclick='seeSanitized(\"" + fileName + "\")' title='see sanitized file'>S</span>"
+                        + "<span class='button' onclick='seeFile(\"" + fileName + "\")' title='see sanitized file'>S</span>"
                         + "</div>";
     });
+}
+
+// rules management functions
+function toggleRules() {
+    rules.style.display = rules.style.display == "none" ? "block" : "none";
+}
+function getRules() {
+    return [...document.querySelectorAll('#rules > input:checked')].map(e => e.name).join("_");
 }
 
 // initialisation
