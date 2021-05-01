@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class RemoveLinesWithoutWord implements Sanitizer {
 
-    private final String REGEX1 = ".*[A-zÀ-ú]{4}.*";
+    private final String REGEX1 = ".*[A-zÀ-ú]{4}.*"; // at least 4 char
 
     @Override
     public String[] sanitize(String[] lines) {

@@ -1,21 +1,27 @@
 package com.herokuapp.sanitize;
 
-import static com.herokuapp.sanitize.SanitizerUtil.indexOfFirst;
-import static com.herokuapp.sanitize.SanitizerUtil.indexOfNextTitle;
-import static com.herokuapp.sanitize.SanitizerUtil.removeLinesInRange;
+import static com.herokuapp.sanitize.helper.IndexHelper.*;
+import static com.herokuapp.sanitize.helper.ArrayHelper.*;
 
 public class RemoveReferenceParagraphe implements Sanitizer {
 
-    private final static String[] KEYWORD = {"références" , "references"};
+    private final static String[] KEYWORD = { "références", "references","bibliographie", "bibliography", "références bibliographiques" };
 
     @Override
     public String[] sanitize(String[] lines) {
-        String[] temp = lines;
-        while(indexOfFirst(temp, KEYWORD) != 0) {
-            int referenceIndex = indexOfFirst(temp, KEYWORD);
-            int nextTitleIndex = indexOfNextTitle(temp, referenceIndex + 1);
-            temp = removeLinesInRange(temp, referenceIndex, nextTitleIndex);
+        return removeReferenceParagraphe(lines);
+    }
+
+    public String[] removeReferenceParagraphe(String[] lines) {
+        int referenceIndex = indexOfFirstKeyword(lines, KEYWORD);
+        if (referenceIndex == -1) {
+            return lines;
         }
-        return temp;
+        int nextTitleIndex = indexOfNextTitle(lines, referenceIndex + 3);
+        if (nextTitleIndex == -1) {
+            return lines;
+        }
+        String[] outputLines = removeLinesInRange(lines, referenceIndex, nextTitleIndex - 1);
+        return removeReferenceParagraphe(outputLines);
     }
 }

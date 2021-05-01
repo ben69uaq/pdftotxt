@@ -1,9 +1,7 @@
 package com.herokuapp.sanitize;
 
-import static com.herokuapp.sanitize.SanitizerUtil.indexOfLast;
-import static com.herokuapp.sanitize.SanitizerUtil.indexOfNextTitle;
-
-import java.util.Arrays;
+import static com.herokuapp.sanitize.helper.IndexHelper.*;
+import static com.herokuapp.sanitize.helper.ArrayHelper.*;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,17 +9,28 @@ import lombok.extern.slf4j.Slf4j;
 public class RemovePartAfterConclusion implements Sanitizer {
 
     private final static String[] KEYWORD_FIRST = {"conclusions et perspectives"};
-    private final static String[] KEYWORD_SECOND = {"conclusion"};
+    private final static String[] KEYWORD_SECOND = {"conclusion", "conclusions"};
 
     @Override
     public String[] sanitize(String[] lines) {
-        int conclusionIndex = indexOfLast(lines, KEYWORD_FIRST);
-        if(conclusionIndex == 0) {
-            conclusionIndex = indexOfLast(lines, KEYWORD_SECOND);
+        int from = indexOfEndOfConclusion(lines);
+        if(from == -1) {
+            return lines;
         }
-        int nextTitleIndex = indexOfNextTitle(lines, conclusionIndex + 1);
-        log.info("line from " + nextTitleIndex + " to the end removed");
-        return Arrays.copyOfRange(lines, 0, nextTitleIndex);
+        log.info("Conclusion found, part after index " + from + " removed");
+        return keepLineInRange(lines, 0, from);
+    }
+    
+    private int indexOfEndOfConclusion(String[] lines) {
+        int indexFirst = indexOfLastKeyword(lines, KEYWORD_FIRST);
+        if(indexFirst != -1) {
+            return indexOfNextTitle(lines, indexFirst + 3); // search title three line after conclusion keyword
+        }
+        int indexSecond = indexOfLastKeyword(lines, KEYWORD_SECOND);
+        if(indexSecond != -1) {
+            return indexOfNextTitle(lines, indexSecond + 3);
+        }
+        return -1;
     }
     
 }

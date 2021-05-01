@@ -1,10 +1,11 @@
 package com.herokuapp.sanitize;
 
-import static com.herokuapp.sanitize.SanitizerUtil.*;
+import static com.herokuapp.sanitize.helper.ArrayHelper.*;
+import static com.herokuapp.sanitize.helper.IndexHelper.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+
+import com.herokuapp.sanitize.helper.ConditionHelper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,74 +13,42 @@ import lombok.extern.slf4j.Slf4j;
 public class RemoveTableOfContent implements Sanitizer {
 
     private final String REGEX = ".*\\.\\.\\.\\.\\..*";
-    private final static String[] TABLE_OF_CONTENT = {"table des matieres", "table des matières", "table des matières", "table of content"};
+    private final String REGEX2 = ".*…….*";
+    private final static String[] TABLE_OF_CONTENT = {"table des matieres", "table des matières", "table des matières", "table of content", "sommaire"};
 
     @Override
     public String[] sanitize(String[] lines) {
         return Optional.of(lines)
-            .map(this::removeTableOfContentParagraphe)
-            .map(this::removeLinesWithFiveDots)
+            .map(this::removeBasedOnPageNumber)
+            .map(this::removeBasedOnDots)
             .orElse(lines);
     }
 
-    private String[] removeTableOfContentParagraphe(String[] lines) {
-        int beginTableIndex = indexOfFirst(lines, TABLE_OF_CONTENT);
-        if(beginTableIndex == 0) {
+    private String[] removeBasedOnPageNumber(String[] lines) {
+        int from = indexOfFirstKeyword(lines, TABLE_OF_CONTENT);
+        if(from == -1) {
             return lines;
         }
-        int lastTableIndex = lastIndexOfTableOfContent(lines, beginTableIndex);
-        log.info("table of content paragraphe found between index " + beginTableIndex + " and index " + lastTableIndex);
-        return removeLinesInRange(lines, beginTableIndex, lastTableIndex);
-    }
-
-    private String[] removeLinesWithFiveDots(String[] lines) {
-        int beginTableIndex = firstIndexOfFiveDots(lines);
-        if(beginTableIndex == 0) {
+        int to = indexOfNextMatching(lines, from + 3, ConditionHelper::isTitle);
+        if(to == -1) {
             return lines;
         }
-        int lastTableIndex = lastIndexOfFiveDots(lines);
-        log.info("table of content with five dots found between index " + beginTableIndex + " and index " + lastTableIndex);
-        return removeTableOfContentInRange(lines, beginTableIndex, lastTableIndex);
+        log.info("table of content paragraphe removed from " + from + " to " + (to - 1));
+        String[] outputLines = removeLinesInRange(lines, from, to - 1);
+        return removeBasedOnPageNumber(outputLines);
     }
 
-    private int lastIndexOfTableOfContent(String[] lines, int beginTableIndex) {
-        for(int i = beginTableIndex+1; i < lines.length; i++) {
-            if(!Character.isDigit(lines[i].charAt(lines[i].length()-1))) { // first line that does not ends wit a number
-                return i-1;
-            }
+    private String[] removeBasedOnDots(String[] lines) {
+        int from = indexOfNextMatching(lines, 0, line -> line.matches(REGEX) || line.matches(REGEX2));
+        if(from == -1) {
+            return lines;
         }
-        return beginTableIndex;
-    }
-
-    private String[] removeTableOfContentInRange(String[] lines, int firstIndex, int lastIndex) {
-        List<String> output = new ArrayList<String>();
-        for(int i = 0; i < lines.length; i++) {
-            if(i < firstIndex || i > lastIndex) {
-                output.add(lines[i]);
-            }
-            else if(!lines[i].matches(REGEX) && !lines[i-1].matches(REGEX) && !lines[i+1].matches(REGEX)) {
-                output.add(lines[i]);
-            }
+        int to = indexOfPreviousMatching(lines, lines.length - 1, line -> line.matches(REGEX) || line.matches(REGEX2));
+        if(to == -1) {
+            return lines;
         }
-        return output.stream().toArray(String[]::new);
-    }
-
-    private int firstIndexOfFiveDots(String[] lines) {
-        for(int i = 0; i < lines.length; i++) {
-            if(lines[i].matches(REGEX)) {
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    private int lastIndexOfFiveDots(String[] lines) {
-        for(int i = lines.length-1; i > 0; i--) {
-            if(lines[i].matches(REGEX)) {
-                return i;
-            }
-        }
-        return 0;
+        log.info("table of content with five dots removed from " + from + " to " + to);
+        return removeLinesInRange(lines, from, to);
     }
 
 }
