@@ -21,7 +21,7 @@ public class ConditionHelper {
     }
 
     public static boolean isTitle(String line) {
-        if(line.length() < 30 && line.trim().matches(".*[0-9A-zÀ-ú]$")) {
+        if(line.length() < 40 && line.trim().matches(".*[0-9A-zÀ-ú]$")) {
             log.info("[isTitle] title <" + line + "> found");
             return true;
         }
