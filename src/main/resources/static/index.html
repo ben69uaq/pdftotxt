@@ -1,8 +1,8 @@
 <html>
-	<head>
-		<title>PDFtoTXT</title>
-		<link href="style.css" rel="stylesheet">
-	</head>
+<head>
+	<title>PDFtoTXT</title>
+	<link href="style.css" rel="stylesheet">
+</head>
 <body>
 	<div id="logo">PDF<span>to</span>TXT</div>
 	<div id="bar">
@@ -20,6 +20,16 @@
 		<input checked type="checkbox" name="RemovePartBeforeIntroduction" id="rule3"><label for="rule3">Remove part before introduction</label><br/>
 		<input checked type="checkbox" name="RemovePartAfterConclusion" id="rule4"><label for="rule4">Remove part after conclusion</label><br/>
 		<input checked type="checkbox" name="RemoveReferenceParagraphe" id="rule5"><label for="rule5">Remove reference paragraphe</label><br/>
+		<br/>
+		<div style="border: 1px solid; padding: 15px;">
+			<span>Layout :</span><br/>
+			<input type="text" name="limit0" id="rule6" value="23"><label for="rule6">X</label>
+			<span style="margin-right: 40px;"></span>
+			<input type="text" name="limit1" id="rule7" value="55"><label for="rule7">Y</label><br/>
+			<input type="text" name="limit2" id="rule8" value="600"><label for="rule8">Width</label>
+			<span style="margin-right: 12px;"></span>
+			<input type="text" name="limit3" id="rule9" value="660"><label for="rule9">Height</label><br/>
+		</div>
 	</div>
 </body>
 <script src="script.js"></script>

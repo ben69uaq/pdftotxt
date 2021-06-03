@@ -79,7 +79,7 @@ public class WebController {
         return Optional.of(fileName)
             .map(WebController::decode)
             .map(fileService::get)
-            .map(documentService::read)
+            .map(file -> documentService.read(file, rules))
             .map(doc -> sanitizerService.sanitize(doc, rules))
             .map(content -> content.replaceAll(separator, "<br/>"))
             .map(content -> ResponseEntity.ok().body(content))
@@ -92,7 +92,7 @@ public class WebController {
         log.info("reading all files with sanitization");
         return fileService.list().stream()
             .map(fileService::get)
-            .map(documentService::read)
+            .map(file -> documentService.read(file, rules))
             .map(doc -> sanitizerService.sanitize(doc, rules))
             .reduce((a,b) -> a.concat(separator).concat("-----").concat(separator).concat(b))
             .map(content -> content.replaceAll(separator, "<br/>"))

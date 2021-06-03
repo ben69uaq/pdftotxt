@@ -2,7 +2,6 @@ package com.herokuapp.pdfbox;
 
 import java.awt.Rectangle;
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.IntStream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -13,23 +12,25 @@ public class DocumentReader {
 
     private final String separator = System.getProperty("line.separator");
 
-    PDFTextStripperByArea stripper;
-    List<Integer> excludedPages;
+    private PDFTextStripperByArea stripper;
 
-    DocumentReader(final Rectangle limit, final List<Integer> excludedPages) {
-        this.excludedPages = excludedPages;
+    DocumentReader() {
         try {
             stripper = new PDFTextStripperByArea();
             stripper.setSortByPosition(false);
-            stripper.addRegion("limit", limit);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    String read(PDDocument document) {
+    String read(PDDocument document, Rectangle limit) {
+        stripper.removeRegion("limit");
+        stripper.addRegion("limit", limit);
+        return readDocument(document);
+    }
+
+    private String readDocument(PDDocument document) {
         return IntStream.range(0, document.getNumberOfPages())
-            .filter(pageIndex -> !excludedPages.contains(pageIndex))
             .mapToObj(document::getPage)
             .map(this::readPage)
             .reduce("", String::concat);
