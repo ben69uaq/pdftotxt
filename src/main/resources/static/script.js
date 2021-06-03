@@ -55,10 +55,10 @@ function deleteAll() {
     .then(loadFileList);
 }
 function seeFile(fileName) {
-    window.open("/get/" + fileName + "?rules=" + getRules(), '_blank').focus();
+    window.open("/get/" + fileName + "?rules=" + getRules() + getLayout(), '_blank').focus();
 }
 function seeAll() {
-    window.open("/get/all" + "?rules=" + getRules(), '_blank').focus();
+    window.open("/get/all" + "?rules=" + getRules() + getLayout(), '_blank').focus();
 }
 
 // list management functions
@@ -83,6 +83,9 @@ function toggleRules() {
 }
 function getRules() {
     return [...document.querySelectorAll('#rules > input:checked')].map(e => e.name).join("_");
+}
+function getLayout() {
+    return "_limit_" + [...document.querySelectorAll('#rules input[type=text]')].map(e => e.value).join("_") + "_limit_";
 }
 
 // initialisation

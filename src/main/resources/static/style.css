@@ -76,3 +76,7 @@ body {
     background-color: darkgrey;
     box-shadow: 0 0 5px darkgrey;
 }
+#rules input[type=text] {
+    width: 40px;
+    margin-right: 5px;
+}
