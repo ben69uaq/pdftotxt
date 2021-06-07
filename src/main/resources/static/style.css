@@ -70,13 +70,29 @@ body {
 }
 #rules {
     position: fixed;
-    padding: 20px;
     top: 40px;
     right: 25px;
+    width: 240px;
+    padding: 20px;
     background-color: darkgrey;
     box-shadow: 0 0 5px darkgrey;
 }
 #rules input[type=text] {
     width: 40px;
     margin-right: 5px;
+}
+#rules #help span {
+    cursor: help;
+    padding: 0px 4px;
+    border: 1px solid;
+    border-radius: 10px;
+    background-color: white;
+}
+#rules #help #explication {
+    display: none;
+    margin-top: 10px;
+    width: 210px;
+}
+#rules #help:hover #explication {
+    display: block;
 }
