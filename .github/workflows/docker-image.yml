@@ -22,7 +22,7 @@ jobs:
     - run: mkdir staging && cp target/*.jar staging
     - uses: actions/upload-artifact@v3
       with:
-        name: Package
+        name: pdftotxt-1.0
         path: staging
     - uses: actions/checkout@v3
     - name: Build the Docker image
