@@ -1,0 +1,36 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get Java artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: app
+        path: app
+            
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag pdftotxt
+
+    - name: Save the Docker image
+      run: docker save --output image.tar pdftotxt
+      
+    - name: Upload image file
+      uses: actions/upload-artifact@master
+      with:
+        name: image
+        path: image.tar
