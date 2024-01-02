@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  buid-jar:
+  buid:
 
     runs-on: ubuntu-latest
     steps:
@@ -32,23 +32,9 @@ jobs:
       with:
         name: app
         path: app.jar
-
-  buid-image:
-
-    runs-on: ubuntu-latest
-    needs: buid-jar 
-    steps:
-    
-    - uses: actions/checkout@v4
     
     - name: Build Docker image
       run: docker build . --file Dockerfile --tag pdftotxt:$(date +%s)
-
-  publish-image:
-
-    runs-on: ubuntu-latest
-    needs: buid-image
-    steps:
     
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
