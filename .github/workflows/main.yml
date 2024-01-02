@@ -39,6 +39,8 @@ jobs:
     needs: buid-jar 
     steps:
     
+    - uses: actions/checkout@v4
+    
     - name: Build Docker image
       run: docker build . --file Dockerfile --tag pdftotxt:$(date +%s)
 
