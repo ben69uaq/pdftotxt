@@ -11,8 +11,8 @@ jobs:
   buid-jar:
 
     runs-on: ubuntu-latest
-
     steps:
+    
     - uses: actions/checkout@v4
     
     - name: Set up Java
@@ -36,11 +36,18 @@ jobs:
   buid-image:
 
     runs-on: ubuntu-latest
-
+    needs: buid-jar 
     steps:
+    
     - name: Build Docker image
       run: docker build . --file Dockerfile ghcr.io/ben69uaq/pdftotxt
 
+  publish-image:
+
+    runs-on: ubuntu-latest
+    needs: buid-image
+    steps:
+    
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
       with:
