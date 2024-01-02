@@ -44,4 +44,4 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Publish Docker image
-      run: docker push ghcr.io/ben69uaq/pdftotxt:latest
+      run: docker push pdftotxt:latest
