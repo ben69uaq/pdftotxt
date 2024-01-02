@@ -40,7 +40,7 @@ jobs:
     steps:
     
     - name: Build Docker image
-      run: docker build ghcr.io/ben69uaq/pdftotxt --file Dockerfile 
+      run: docker build . --file Dockerfile --tag pdftotxt:$(date +%s)
 
   publish-image:
 
