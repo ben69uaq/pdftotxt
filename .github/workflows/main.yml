@@ -40,7 +40,7 @@ jobs:
     steps:
     
     - name: Build Docker image
-      run: docker build . --file Dockerfile ghcr.io/ben69uaq/pdftotxt
+      run: docker build ghcr.io/ben69uaq/pdftotxt --file Dockerfile 
 
   publish-image:
 
