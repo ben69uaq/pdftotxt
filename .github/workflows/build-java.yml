@@ -15,17 +15,32 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Java env
+    - name: Set up Java
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Execute Maven build
+    - name: Build Jar file
       run: mvn --batch-mode --update-snapshots verify
+
+    - name: Copy Jar file
+      run: mv target/pdftotxt*.jar app.jar
 
     - name: Upload Jar file
       uses: actions/upload-artifact@master
       with:
         name: app
-        path: target/pdftotxt*.jar
+        path: app.jar
+            
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag pdftotxt
+
+    - name: Save the Docker image
+      run: docker save --output image.tar pdftotxt
+      
+    - name: Upload Docker image
+      uses: actions/upload-artifact@master
+      with:
+        name: image
+        path: image.tar
