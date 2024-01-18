@@ -10,11 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
-import com.herokuapp.file.FileService;
-import com.herokuapp.pdfbox.DocumentService;
-import com.herokuapp.sanitize.SanitizerService;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +22,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.herokuapp.file.FileService;
+import com.herokuapp.pdfbox.DocumentService;
+import com.herokuapp.sanitize.SanitizerService;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class WebController {
     
     private final String separator = System.getProperty("line.separator");
@@ -38,13 +39,6 @@ public class WebController {
     private final FileService fileService;
     private final DocumentService documentService;
     private final SanitizerService sanitizerService;
-
-    WebController(@Value("${root}") String root) {
-        fileService = new FileService(root);
-        documentService = new DocumentService();
-        sanitizerService = new SanitizerService();
-        fileService.initilize();
-    }
 
     @GetMapping("list")
     @ResponseBody

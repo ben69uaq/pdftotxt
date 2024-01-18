@@ -17,18 +17,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileService {
 
-    private final String root;
-    //windows "c:/data/";
-    //linux "/app/data/";
+    private final String inputPath;
+    private final String outputPath;
 
-    public FileService(String rootPath) {
-        root = rootPath;
-        initilize();
+    public FileService(String root, String sessionPath) {
+        inputPath = root + "/" + sessionPath + "/input/";
+        outputPath = root + "/" + sessionPath + "/output/";
+        initialize(root, sessionPath);
     }
 
-    public void initilize() {
-        Path input = Paths.get(root + "input");
-        Path output = Paths.get(root + "output");
+    private void initialize(String root, String sessionPath) {
+        Path input = Paths.get(root + "/" + sessionPath+ "/input");
+        Path output = Paths.get(root + "/" + sessionPath+ "/output");
         try {
             Files.createDirectories(input);
             Files.createDirectories(output);
@@ -38,11 +38,10 @@ public class FileService {
     }
 
     public File get(String fileName) {
-        return new File(root + "input/" + fileName);
+        return new File(inputPath + fileName);
     }
 
     public List<String> list() {
-        final String inputPath = root + "input/";
         try {
             return Files.list(Paths.get(inputPath))
             .filter(file -> !Files.isDirectory(file))
@@ -56,7 +55,6 @@ public class FileService {
     }
 
     public void storeTxt(final String fileName, final String content) {
-        final String outputPath = root + "output/" + fileName;
         try {
             Files.write(Paths.get(outputPath), content.getBytes());
             log.info("File stored: <" + fileName +">");
@@ -66,7 +64,6 @@ public class FileService {
     }
 
     public void storeFile(final MultipartFile file) {
-        final String inputPath = root + "input/";
         try {
             file.transferTo(new File(inputPath + file.getOriginalFilename()));
             log.info("File stored: <" + file.getOriginalFilename() +">");
