@@ -60,6 +60,9 @@ function seeFile(fileName) {
 function seeAll() {
     window.open("/get/all" + "?rules=" + getRules() + getLayout(), '_blank').focus();
 }
+function previewFile(fileName) {
+    window.open("/preview/" + fileName, '_blank').focus();
+}
 
 // list management functions
 function loadFileList() {
@@ -70,9 +73,11 @@ function loadFileList() {
 function displayList(data) {
     list.innerHTML = "";
     data.forEach(fileName => {
-        list.innerHTML += "<div class='item'>" + decodeURI(fileName).replace(/\+/g, ' ')
+        list.innerHTML += "<div class='item'>"
+                        + decodeURI(fileName).replace(/\+/g, ' ')
                         + "<span class='button' onclick='deleteFile(\"" + fileName + "\")' title='delete file'>X</span>"
                         + "<span class='button' onclick='seeFile(\"" + fileName + "\")' title='see sanitized file'>S</span>"
+                        + "<span class='button' onclick='previewFile(\"" + fileName + "\")' title='preview file'>P</span>"
                         + "</div>";
     });
 }

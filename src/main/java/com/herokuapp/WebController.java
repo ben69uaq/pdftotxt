@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +54,7 @@ public class WebController {
         log.info("deleting file <" + fileName + ">");
         Optional.of(fileName)
             .map(WebController::decode)
-            .map(fileService::get)
+            .map(fileService::getPdf)
             .map(File::delete);
     }
 
@@ -62,7 +63,7 @@ public class WebController {
     public void deleteAll() {
         log.info("deleting all files");
         fileService.list().stream()
-            .map(fileService::get)
+            .map(fileService::getPdf)
             .forEach(File::delete);
     }
 
@@ -72,7 +73,7 @@ public class WebController {
         log.info("reading file with sanitization <" + fileName + ">");
         return Optional.of(fileName)
             .map(WebController::decode)
-            .map(fileService::get)
+            .map(fileService::getPdf)
             .map(file -> documentService.read(file, rules))
             .map(doc -> sanitizerService.sanitize(doc, rules))
             .map(content -> content.replaceAll(separator, "<br/>"))
@@ -85,7 +86,7 @@ public class WebController {
     public ResponseEntity<String> getAll(@RequestParam String rules) {
         log.info("reading all files with sanitization");
         return fileService.list().stream()
-            .map(fileService::get)
+            .map(fileService::getPdf)
             .map(file -> documentService.read(file, rules))
             .map(doc -> sanitizerService.sanitize(doc, rules))
             .reduce((a,b) -> a.concat(separator).concat("-----").concat(separator).concat(b))
@@ -98,7 +99,23 @@ public class WebController {
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void upload(@RequestParam("file") MultipartFile file) {
         log.info("uploading file <" + file.getOriginalFilename() + ">");
-        fileService.storeFile(file);
+        fileService.storePdf(file);
+        Optional.of(file.getOriginalFilename())
+            .map(WebController::decode)
+            .map(fileService::getPdf)
+            .map(documentService::convert)
+            .ifPresent(c -> fileService.storeImage(file.getOriginalFilename(), c));
+    }
+
+    @RequestMapping("preview/{fileName}")
+    @ResponseBody
+    public ResponseEntity<byte[]> preview(@PathVariable String fileName) {
+        log.info("preview file <" + fileName + ">");
+        return Optional.of(fileName)
+            .map(WebController::decode)
+            .map(fileService::getImage)
+            .map(content -> ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(content))
+            .orElseThrow(() -> new RuntimeException("Not able to get preview of file " + fileName));
     }
 
     static private String encode(String input) {

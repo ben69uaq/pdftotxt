@@ -11,10 +11,18 @@ public class DocumentService {
 
     private final DocumentLoader documentLoader;
     private final DocumentReader documentReader;
+    private final DocumentConverter documentConverter;
 
     public DocumentService() {
         documentLoader = new DocumentLoader();
         documentReader = new DocumentReader();
+        documentConverter = new DocumentConverter();
+    }
+
+    public byte[] convert(final File file) {
+        PDDocument document = documentLoader.loadDocument(file);
+        byte[] content = documentConverter.convert(document);
+        return content;
     }
 
     public String read(final File file, final String rules) {

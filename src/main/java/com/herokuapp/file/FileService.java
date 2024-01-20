@@ -9,9 +9,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -37,17 +39,13 @@ public class FileService {
         }
     }
 
-    public File get(String fileName) {
-        return new File(inputPath + fileName);
-    }
-
     public List<String> list() {
         try {
             return Files.list(Paths.get(inputPath))
-            .filter(file -> !Files.isDirectory(file))
-            .map(Path::getFileName)
-            .map(Path::toString)
-            .collect(toList());
+                .filter(file -> !Files.isDirectory(file))
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .collect(toList());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,20 +54,46 @@ public class FileService {
 
     public void storeTxt(final String fileName, final String content) {
         try {
-            Files.write(Paths.get(outputPath), content.getBytes());
-            log.info("File stored: <" + fileName +">");
+            Files.write(Paths.get(outputPath + fileName), content.getBytes());
+            log.info("Text stored: <" + fileName +">");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void storeFile(final MultipartFile file) {
+    public void storePdf(final MultipartFile file) {
         try {
             file.transferTo(new File(inputPath + file.getOriginalFilename()));
-            log.info("File stored: <" + file.getOriginalFilename() +">");
+            log.info("Pdf stored: <" + file.getOriginalFilename() +">");
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
     }
+
+    public File getPdf(String fileName) {
+        return new File(inputPath + fileName);
+    }
+
+    public void storeImage(final String fileName, final byte[] file) {
+        String imageName = fileName.replace(".pdf", ".png");
+        try {
+            Files.write(Paths.get(outputPath + imageName), file);
+            log.info("Image stored: <" + imageName +">");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public byte[] getImage(String fileName) {
+        String imageName = fileName.replace(".pdf", ".png");
+        try {
+            log.info("Image retrieved : <" + imageName +">");
+            return Files.readAllBytes(Paths.get(outputPath + imageName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
+
 
 }
