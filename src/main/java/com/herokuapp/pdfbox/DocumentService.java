@@ -25,15 +25,15 @@ public class DocumentService {
         return content;
     }
 
-    public String read(final File file, final String rules) {
+    public String read(final File file, final String layout) {
         PDDocument document = documentLoader.loadDocument(file);
-        String content = documentReader.read(document, extractLimit(rules));
+        String content = documentReader.read(document, extractLimit(layout));
         return content;
     }
 
-    private Rectangle extractLimit(final String rules) {
-        if(StringUtils.isNotBlank(rules) && rules.contains("_limit_")) {
-            final int[] limits = Stream.of(rules.split("_limit_")[1].split("_")).mapToInt(Integer::parseInt).toArray();
+    private Rectangle extractLimit(final String layout) {
+        if(StringUtils.isNotBlank(layout)) {
+            final int[] limits = Stream.of(layout.split("_")).mapToInt(Integer::parseInt).toArray();
             return new Rectangle(limits[0], limits[1], limits[2], limits[3]);
         }
         return new Rectangle(23, 55, 600, 660); // default limit;

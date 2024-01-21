@@ -69,12 +69,12 @@ public class WebController {
 
     @RequestMapping("get/{fileName}")
     @ResponseBody
-    public ResponseEntity<String> get(@PathVariable String fileName, @RequestParam String rules) {
+    public ResponseEntity<String> get(@PathVariable String fileName, @RequestParam String rules, @RequestParam String layout) {
         log.info("reading file with sanitization <" + fileName + ">");
         return Optional.of(fileName)
             .map(WebController::decode)
             .map(fileService::getPdf)
-            .map(file -> documentService.read(file, rules))
+            .map(file -> documentService.read(file, layout))
             .map(doc -> sanitizerService.sanitize(doc, rules))
             .map(content -> content.replaceAll(separator, "<br/>"))
             .map(content -> ResponseEntity.ok().body(content))
@@ -83,11 +83,11 @@ public class WebController {
 
     @RequestMapping("get/all")
     @ResponseBody
-    public ResponseEntity<String> getAll(@RequestParam String rules) {
+    public ResponseEntity<String> getAll(@RequestParam String rules, @RequestParam String layout) {
         log.info("reading all files with sanitization");
         return fileService.list().stream()
             .map(fileService::getPdf)
-            .map(file -> documentService.read(file, rules))
+            .map(file -> documentService.read(file, layout))
             .map(doc -> sanitizerService.sanitize(doc, rules))
             .reduce((a,b) -> a.concat(separator).concat("-----").concat(separator).concat(b))
             .map(content -> content.replaceAll(separator, "<br/>"))

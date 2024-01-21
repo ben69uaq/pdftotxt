@@ -1,0 +1,22 @@
+.line {
+    position: fixed;
+    background-color: red;
+}
+.line.right,
+.line.left {
+    top: 0;
+    width: 1px;
+    height: 100%;
+}
+.line.top,
+.line.bottom {
+    left: 0;
+    width: 100%;
+    height: 1px;
+}
+.label {
+    position: fixed;
+    padding: 5px;
+    margin: 1px;
+    background-color: yellow;
+}
