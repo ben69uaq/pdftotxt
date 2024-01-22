@@ -3,9 +3,9 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.herokuapp</groupId>
+  <groupId>com.ben69uaq</groupId>
   <artifactId>pdftotxt</artifactId>
-  <version>1.0</version>
+  <version>2.0</version>
   <name>pdftotxt</name>
 
   <parent>
