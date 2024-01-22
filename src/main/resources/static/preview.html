@@ -4,17 +4,24 @@
 	<link href="main.css" rel="stylesheet">
 	<link href="preview.css" rel="stylesheet">
 </head>
-<body>
-	<div id="logo">PDF<span>to</span>TXT</div>
-    <img id="image"/>
-    <div class="line top"></div>
-    <div class="line right"></div>
-    <div class="line bottom"></div>
-    <div class="line left"></div>
-    <div class="label x">X=<span></span></div>
-    <div class="label y">Y=<span></span></div>
-    <div class="label width">WIDTH=<span></span></div>
-    <div class="label height">HEIGHT=<span></span></div>
+<body onmousemove="hove(event)">
+    <div id="logo">PDF<span>to</span>TXT</div>
+    <img id="image" alt="preview" src=""/>
+    <div id="red_top" class="line red horizontal"></div>
+    <div id="red_right" class="line red vertical"></div>
+    <div id="red_bottom" class="line red horizontal"></div>
+    <div id="red_left" class="line red vertical"></div>
+    <div id="x1" class="label"></div>
+    <div id="y1" class="label"></div>
+    <div id="x2" class="label"></div>
+    <div id="y2" class="label"></div>
+    <div id="note">
+        X=<span id="x"></span>
+        <br>
+        Y=<span id="y"></span>
+    </div>
+    <div id="teal_top" class="line teal horizontal"></div>
+    <div id="teal_left" class="line teal vertical"></div>
 </body>
 <script src="preview.js"></script>
 </html>

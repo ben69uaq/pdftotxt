@@ -74,6 +74,7 @@ function displayList(data) {
     list.innerHTML = "";
     data.forEach(fileName => {
         list.innerHTML += "<div class='item'>"
+                        + "<img src='/img/pdf.svg' />"
                         + decodeURI(fileName).replace(/\+/g, ' ')
                         + "<span class='button' onclick='deleteFile(\"" + fileName + "\")' title='delete file'>X</span>"
                         + "<span class='button' onclick='seeFile(\"" + fileName + "\")' title='see sanitized file'>S</span>"

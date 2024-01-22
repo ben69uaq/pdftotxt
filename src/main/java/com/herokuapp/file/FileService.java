@@ -33,7 +33,7 @@ public class FileService {
             Files.createDirectories(input);
             Files.createDirectories(output);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info(e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
@@ -55,7 +55,7 @@ public class FileService {
             Files.write(Paths.get(outputPath + fileName), content.getBytes());
             log.info("Text stored: <" + fileName +">");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info(e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
@@ -64,7 +64,7 @@ public class FileService {
             file.transferTo(new File(inputPath + file.getOriginalFilename()));
             log.info("Pdf stored: <" + file.getOriginalFilename() +">");
         } catch (IllegalStateException | IOException e) {
-            e.printStackTrace();
+            log.info(e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
@@ -78,20 +78,19 @@ public class FileService {
             Files.write(Paths.get(outputPath + imageName), file);
             log.info("Image stored: <" + imageName +">");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info(e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
     public byte[] getImage(String fileName) {
         String imageName = fileName.replace(".pdf", ".png");
         try {
-            log.info("Image retrieved : <" + imageName +">");
+            log.info("Image retrieved: <" + imageName +">");
             return Files.readAllBytes(Paths.get(outputPath + imageName));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info(e.getClass().getName() + ": " + e.getMessage());
         }
         return new byte[0];
     }
-
 
 }

@@ -34,7 +34,10 @@
     box-shadow: 0 0 5px darkgray;
 }
 #list .item img {
-    height: 100px;
+    height: 25px;
+    float: left;
+    margin-top: -5px;
+    margin-right: 10px;
 }
 .button {
     cursor: pointer;
@@ -63,18 +66,18 @@
     width: 40px;
     margin-right: 5px;
 }
-#rules #help span {
+#rules #help #question {
     cursor: help;
-    padding: 0px 4px;
+    padding: 0 4px;
     border: 1px solid;
     border-radius: 10px;
     background-color: white;
 }
 #rules #help #explication {
     display: none;
-    margin-top: 10px;
+    margin-left: 10px;
     width: 210px;
 }
 #rules #help:hover #explication {
-    display: block;
+    display: initial;
 }

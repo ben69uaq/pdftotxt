@@ -1,22 +1,38 @@
+#note {
+    position: absolute;
+    top: -100px; /* hidden by default */
+    left: -100px;
+    padding: 10px;
+    background-color: aqua;
+}
 .line {
-    position: fixed;
+    position: absolute;
+}
+.red {
     background-color: red;
 }
-.line.right,
-.line.left {
+.teal {
+    top: -100px; /* hidden by default */
+    left: -100px;
+    background-color: aqua;
+}
+.vertical {
     top: 0;
     width: 1px;
     height: 100%;
+    min-height: 900px;
 }
-.line.top,
-.line.bottom {
+.horizontal {
     left: 0;
     width: 100%;
     height: 1px;
+    min-width: 800px;
 }
 .label {
-    position: fixed;
+    position: absolute;
+    top: 0;
+    left: 0;
     padding: 5px;
-    margin: 1px;
+    margin: 2px;
     background-color: yellow;
 }
